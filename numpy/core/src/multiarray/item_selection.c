@@ -505,7 +505,8 @@ npy_fastputmask_impl(
             dest += chunk;
         }
     }
-    else {
+    else if (ni > nv) {
+        assert(NPY_FALSE);
         char *tmp_src = src;
         for (npy_intp i = 0, j = 0; i < ni; i++, j++) {
             if (NPY_UNLIKELY(j >= nv)) {
@@ -517,6 +518,15 @@ npy_fastputmask_impl(
             }
             dest += chunk;
             tmp_src += chunk;
+        }
+    }
+    else {
+        for (npy_intp i = 0; i < ni; i++) {
+            if (mask_data[i]) {
+                memmove(dest, src, chunk);
+            }
+            dest += chunk;
+            src += chunk;
         }
     }
 }
