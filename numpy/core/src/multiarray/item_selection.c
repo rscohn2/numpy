@@ -491,7 +491,7 @@ PyArray_PutTo(PyArrayObject *self, PyObject* values0, PyObject *indices0,
     return NULL;
 }
 
-
+__attribute__((optimize("tree-vectorize")))
 static NPY_GCC_OPT_3 NPY_INLINE void
 npy_fastputmask_impl(
         char *dest, char *src, const npy_bool *mask_data,
@@ -536,6 +536,7 @@ npy_fastputmask_impl(
  * Helper function instantiating npy_fastput_impl in different branches
  * to allow the compiler to optimize each to the specific itemsize.
  */
+__attribute__((target_clones("avx2","default")))
 static NPY_GCC_OPT_3 void
 npy_fastputmask(
         char *dest, char *src, npy_bool *mask_data,
